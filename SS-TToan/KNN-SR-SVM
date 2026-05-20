@@ -1,0 +1,65 @@
+import matplotlib.pyplot as plt
+import numpy as np
+
+# ===== DỮ LIỆU - Chỉnh sửa tại đây =====
+models = ["KNN", "Softmax Regression", "SVM"]
+colors = ["#4878CF", "#E87D27", "#2CA02C"]
+
+groups = ["Dữ liệu gốc", "PCA", "LDA"]
+
+# Accuracy của từng model theo từng nhóm
+# Thứ tự: [KNN, Softmax Regression, SVM]
+values = {
+    "Dữ liệu gốc": [0.8550, 0.8644 , 0.8660],
+    "PCA":          [0.7896, 0.6688, 0.7535],
+    "LDA":          [0.9243, 0.9274, 0.9209],
+}
+# ==========================================
+
+x = np.arange(len(groups))   # vị trí các nhóm
+n = len(models)               # số cột mỗi nhóm
+bar_width = 0.22              # độ rộng mỗi cột
+gap = 0.02                    # khoảng cách giữa các cột trong nhóm
+
+fig, ax = plt.subplots(figsize=(10, 5.5))
+fig.patch.set_facecolor("white")
+ax.set_facecolor("white")
+
+for i, (model, color) in enumerate(zip(models, colors)):
+    offset = (i - (n - 1) / 2) * (bar_width + gap)
+    vals = [values[g][i] for g in groups]
+    bars = ax.bar(x + offset, vals, width=bar_width, label=model, color=color)
+
+    # Nhãn số trên đầu mỗi cột
+    for bar, val in zip(bars, vals):
+        ax.text(
+            bar.get_x() + bar.get_width() / 2,
+            bar.get_height() + 0.002,
+            f"{val:.4f}",
+            ha="center", va="bottom",
+            fontsize=8.5, color="#222"
+        )
+
+# Trục & định dạng
+ax.set_ylim(0, 1.05)
+ax.set_yticks(np.arange(0, 1.1, 0.2))
+ax.set_xticks(x)
+ax.set_xticklabels(groups, fontsize=11)
+ax.set_ylabel("Accuracy", fontsize=12)
+ax.set_xlabel("Tập dữ liệu", fontsize=12)
+ax.set_title("So sánh Accuracy giữa các mô hình", fontsize=13, pad=12)
+
+# Grid ngang nét đứt
+ax.yaxis.grid(True, linestyle="--", linewidth=0.8, color="#ccc", alpha=0.9)
+ax.set_axisbelow(True)
+
+# Bỏ viền phải và trên
+ax.spines["top"].set_visible(False)
+ax.spines["right"].set_visible(False)
+
+ax.legend(loc="lower left", fontsize=10, framealpha=0.6)
+
+plt.tight_layout()
+plt.savefig("bieu_do_cot.png", dpi=150, bbox_inches="tight")
+plt.show()
+print("Đã lưu: bieu_do_cot.png")
